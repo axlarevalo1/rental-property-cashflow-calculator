@@ -182,7 +182,7 @@ const firstYearMonths=Math.min(12,months);const firstYearBalance=monthly===0?Mat
 const annualPaydown=principal-firstYearBalance;const annualInterest=payment*firstYearMonths-annualPaydown;const annualEquityGrowth=annualPaydown+price*n('appreciation')/100;
 let viability='yellow',vIcon='⚠️',vTitle='CAUTION · Review the risks',vText='Cashflow or equity assumptions need a closer look before buying.';
 if(cash>=0&&annualEquityGrowth>0){viability='green';vIcon='✅';vTitle='POSITIVE · Promising numbers';vText='Positive monthly cashflow and positive projected equity growth. Still verify rents, financing and expenses.';}
-else if(annualCash+annualPaydown<=0&&annualCash<0){viability='red';vIcon='🚩';vTitle='STOP · Reconsider this purchase';vText='Stop. Do not proceed unless you have a very good reason for buying this property. Operating income does not cover estimated mortgage interest.';}
+else if(annualCash+annualPaydown<=0&&annualCash<0){viability='red';vIcon='🚩';vTitle='STOP · Reconsider this purchase';vText='Stop. Do not proceed as a cashflow investment unless you have a compelling reason. Rental income does not cover estimated mortgage interest. Other reasons to consider buying might include: (1) planning to move into the home later because you value its location; (2) land development potential; or (3) a renovation-and-resale flip with a credible profit margin. Those are different investment strategies and require separate due diligence. This calculator assesses rental cashflow, not development or flipping profitability.';}
 else if(cash<0&&annualCash+annualPaydown>0){vText='Negative cashflow, but projected first-year principal paydown is greater than that cash shortfall. Understand the risks and cash reserves required.';}
 el('viabilityPanel').className='viability '+viability;put('viabilityIcon',vIcon);put('viabilityTitle',vTitle);put('viabilityMessage',vText);put('viabilityDetail','Monthly cashflow: '+money(cash)+' · First-year principal paid: '+money(annualPaydown)+' · First-year interest: '+money(annualInterest));
 const m=Math.min(years*12,months);let balance=principal;if(monthly===0)balance=Math.max(0,principal-payment*m);else balance=Math.max(0,principal*Math.pow(1+monthly,m)-payment*(Math.pow(1+monthly,m)-1)/monthly);const paid=principal-balance;const future=price*Math.pow(1+n('appreciation')/100,years);const growth=future-price;const cashTotal=annualCash*years;const total=cashTotal+growth+paid;const ratio=x=>invested>0?100*x/invested:NaN;const r=x=>Number.isFinite(x)?pct(x):'N/A';
@@ -223,7 +223,11 @@ function makePdf(){
  else if(vk==='yellow'){commands.push(`${color(...vc)} RG 2 w 54 ${(H-vy-42).toFixed(2)} m 66 ${(H-vy-18).toFixed(2)} l 78 ${(H-vy-42).toFixed(2)} l h S`);txt(64,vy+27,'!',13,true,...vc);}
  else{commands.push(`${color(...vc)} RG 2.5 w 56 ${(H-vy-17).toFixed(2)} m 56 ${(H-vy-50).toFixed(2)} l S`);fill(57,vy+18,22,18,...vc);}
  txt(87,vy+17,vt,13,true,...vc);
- wrap(vm,465,9).slice(0,3).forEach((line,i)=>txt(54,vy+50+i*12,line,9,false,55,54,50));y+=108;
+ const verdictLines=wrap(vm,470,9);const displayedLines=vk==='red'?verdictLines:verdictLines.slice(0,3);
+ const verdictHeight=Math.max(94,57+displayedLines.length*12);
+ // Extend the card when the red verdict explains non-cashflow reasons to buy.
+ if(verdictHeight>94){fill(38,vy+94,W-76,verdictHeight-94,246,244,237);fill(38,vy+94,6,verdictHeight-94,...vc);}
+ displayedLines.forEach((line,i)=>txt(54,vy+50+i*12,line,9,false,55,54,50));y+=verdictHeight+14;
  section('INVESTMENT RESULTS');
  const results=[['Projection period',document.querySelector('[data-years].active')?.textContent?.trim()||'Year 1'],['Estimated monthly cashflow',shown('cashDisplay')],['Annual cashflow',shown('cashYear')],['Annual cash-on-cash return',shown('cocRate')],['Cashflow return',shown('cashRate')],['Appreciation return',shown('appRate')],['Mortgage paydown return',shown('payRate')],['Combined projected ROI',shown('totalRate')]];
  if(!E('annualizedBlock').hidden)results.push(['Annualized total return (CAGR equivalent)',shown('annualizedRate')]);
