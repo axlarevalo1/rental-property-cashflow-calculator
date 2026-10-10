@@ -128,7 +128,7 @@ a{color:#e8bd55}
 <header class="hero"><div class="hero-inner"><div class="eyebrow">Sell With Ariell | Calgary Investment Tools</div><h1>YOUR PROPERTY.<br><span class="gold">YOUR CASHFLOW.</span><br>YOUR STRATEGY.</h1><p>Run the numbers on a rental property with projected cashflow, mortgage paydown, appreciation, and combined return, all in one simple calculator, designed to help you make smarter real estate investment decisions.</p></div></header>
 <div class="layout"><div class="inputcol">
 <section class="panel"><h2>1. Purchase & financing</h2><div class="fields">
-<div class="field wide"><label for="address">Property address (optional)</label><div class="control"><input id="address" type="text" placeholder="Calgary, Alberta"></div></div>
+
 <div class="field"><label for="price">Purchase price</label><div class="control"><span>$</span><input id="price" type="number" min="0" step="1000" value="900000"></div></div>
 <div class="field"><label for="down">Down payment</label><div class="control"><input id="down" type="number" min="0" max="100" step="1" value="20"><span>%</span></div></div>
 <div class="field"><label for="rate">Mortgage interest rate</label><div class="control"><input id="rate" type="number" min="0" max="30" step=".05" value="3.8"><span>%</span></div></div>
@@ -201,10 +201,10 @@ ids.forEach(k=>el(k).addEventListener('input',()=>{if(k==='price'&&assessedSynce
 <script>
 (function(){'use strict';
 const E=id=>document.getElementById(id), value=id=>E(id)?.value || '', shown=id=>E(id)?.textContent?.trim() || '', valname=(id)=>{const e=E(id);return e?.closest('.field')?.querySelector('label')?.textContent?.trim() || id};
-function syncReportMetadata(){E('printPreparedFor').textContent=value('preparedFor').trim()||'Not specified';E('printPropertyAddress').textContent=value('reportPropertyAddress').trim()||value('address').trim()||'Not specified';}
-E('preparedFor').addEventListener('input',syncReportMetadata);E('reportPropertyAddress').addEventListener('input',syncReportMetadata);E('address').addEventListener('input',syncReportMetadata);syncReportMetadata();
+function syncReportMetadata(){E('printPreparedFor').textContent=value('preparedFor').trim()||'Not specified';E('printPropertyAddress').textContent=value('reportPropertyAddress').trim()||'Not specified';}
+E('preparedFor').addEventListener('input',syncReportMetadata);E('reportPropertyAddress').addEventListener('input',syncReportMetadata);syncReportMetadata();
 function reportRows(){
- const rows=[['Report prepared for',value('preparedFor')||'Not specified'],['Property address',value('reportPropertyAddress')||value('address')||'Not specified'],['Purchase price','$'+Number(value('price')||0).toLocaleString('en-CA')],['Down payment',value('down')+'%'],['Mortgage interest rate',value('rate')+'%'],['Amortization',value('amort')+' years'],['Closing costs & upfront repairs','$'+Number(value('closing')||0).toLocaleString('en-CA')],['Assumed annual appreciation',value('appreciation')+'%']];
+ const rows=[['Report prepared for',value('preparedFor')||'Not specified'],['Property address',value('reportPropertyAddress')||'Not specified'],['Purchase price','$'+Number(value('price')||0).toLocaleString('en-CA')],['Down payment',value('down')+'%'],['Mortgage interest rate',value('rate')+'%'],['Amortization',value('amort')+' years'],['Closing costs & upfront repairs','$'+Number(value('closing')||0).toLocaleString('en-CA')],['Assumed annual appreciation',value('appreciation')+'%']];
  for(const id of ['upper','lower','parking','otherRent','vacancy','management','assessed','taxRate','taxAnnual','insurance','utilities','condo','maintenance','otherCost']){const v=value(id);rows.push([valname(id),v+(['vacancy','management','taxRate'].includes(id)?'%':'')]);}
  if(!E('cmhcPanel').hidden){rows.push(['CMHC premium',shown('cmhcPremium')],['Insured mortgage',shown('cmhcTotal')]);}
  rows.push(['Monthly rent after vacancy',shown('rentDisplay')],['Mortgage amount',shown('mortgageTotalDisplay')],['Monthly mortgage payment',shown('paymentDisplay')],['Monthly operating expenses',shown('expenseDisplay')],['Monthly cashflow',shown('cashDisplay')],['Annual cashflow',shown('cashYear')],['Cashflow return',shown('cashRate')],['Appreciation return',shown('appRate')],['Mortgage paydown return',shown('payRate')],['Combined projected ROI',shown('totalRate')],['Annual cash-on-cash return',shown('cocRate')],['Annualized total return (CAGR equivalent)',document.getElementById('annualizedBlock').hidden?'Not applicable for Year 1':shown('annualizedRate')],['Projected property value',shown('futureValue')],['Projected mortgage balance',shown('futureMortgage')],['Projected equity',shown('futureEquity')]);return rows;
@@ -224,7 +224,7 @@ function makePdf(){
  function row(label,value){let l=wrap(label,275),v=wrap(value,190),height=Math.max(l.length,v.length)*14+8;room(height);l.forEach((line,i)=>txt(44,y+i*14,line,9,false,62,63,64));v.forEach((line,i)=>txt(350,y+i*14,line,9,true,15,16,17));y+=height;fill(42,y-4,W-84,0.6,228,225,216);}
  function footer(){pages.push(commands.join('\n'));for(let i=0;i<pages.length;i++){let c=pages[i];const foot=`${color(120,120,120)} rg BT /F1 8 Tf 1 0 0 1 42 29 Tm (${escapePdf('Sell With Ariell Real Estate Team | CIR Realty | filipinorealtorcalgary.com')}) Tj ET ${color(120,120,120)} rg BT /F1 8 Tf 1 0 0 1 544 29 Tm (Page ${i+1}) Tj ET`;pages[i]=c+'\n'+foot;}}
  start();txt(42,y,'Prepared: '+new Date().toLocaleDateString('en-CA'),9,false,110,110,110);y+=23;
-row('REPORT PREPARED FOR',value('preparedFor').trim()||'Not specified');row('PROPERTY BEING EVALUATED',value('reportPropertyAddress').trim()||value('address').trim()||'Not specified');y+=9;
+row('REPORT PREPARED FOR',value('preparedFor').trim()||'Not specified');row('PROPERTY BEING EVALUATED',value('reportPropertyAddress').trim()||'Not specified');y+=9;
  // Short investment verdict, shown at the top of the exported report.
  const vt=E('viabilityTitle').textContent, vm=E('viabilityMessage').textContent, vk=E('viabilityPanel').classList.contains('green')?'green':E('viabilityPanel').classList.contains('red')?'red':'yellow';
  const vc=vk==='green'?[25,114,68]:vk==='red'?[177,52,52]:[155,111,26];
