@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rental Property Cashflow & ROI Calculator | Sell With Ariell</title>
+<style>
+:root{
+  --brand-black:#060b0d;
+  --brand-black-soft:#11181c;
+  --brand-gold:#d2a63a;
+  --brand-gold-deep:#a87908;
+  --brand-gold-soft:#efe4bf;
+  --brand-cream:#f4f1e8;
+  --brand-bg:#f3f2ef;
+  --brand-card:#e8e5de;
+  --brand-card-2:#edeae3;
+  --brand-line:#d4d0c6;
+  --brand-text:#12171a;
+  --brand-muted:#5e6266;
+  --good:#1b4f2b;
+  --bad:#8e2f2a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--brand-bg);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--brand-text)}
+.shell{max-width:1180px;margin:auto;padding:22px}
+.hero{position:relative;background:var(--brand-black);color:#fff;padding:38px 38px 34px;border-radius:22px;margin-bottom:18px;overflow:hidden}
+.hero::before{content:"";position:absolute;left:30px;top:42px;width:6px;height:70px;background:var(--brand-gold);border-radius:99px}
+.hero-inner{padding-left:30px;max-width:760px}
+.eyebrow{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--brand-gold);font-weight:800}
+.hero h1{font-size:clamp(29px,4vw,48px);line-height:1.08;margin:18px 0 14px;font-weight:900;letter-spacing:-0.02em}
+.hero h1 .gold{color:var(--brand-gold)}
+.hero p{color:#d6d3cb;max-width:720px;margin-bottom:0;font-size:16px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.9fr);gap:18px;align-items:start}
+.panel{background:#fff;border:1px solid var(--brand-line);border-radius:18px;padding:23px;box-shadow:0 5px 22px rgba(0,0,0,.045);margin-bottom:17px}
+.panel h2{font-size:20px;margin:0 0 15px;color:var(--brand-black)}
+.panel h3{font-size:15px;margin:21px 0 11px;color:var(--brand-gold-deep)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{min-width:0}.field.wide{grid-column:1/-1}
+label{font-size:12px;font-weight:800;display:block;margin-bottom:5px;color:#2d3539}.hint{font-size:11px;font-weight:500;color:var(--brand-muted)}
+.control{display:flex;border:1px solid #cfc9bc;background:#fff;align-items:center;border-radius:10px;overflow:hidden;transition:.15s ease}
+.control:focus-within{outline:2px solid rgba(210,166,58,.28);border-color:var(--brand-gold)}
+.control span{color:#716c63;padding:0 10px;background:var(--brand-card-2);align-self:stretch;display:flex;align-items:center;font-size:13px;white-space:nowrap}
+.control input,.control select{height:42px;min-width:0;width:100%;border:0;outline:0;background:transparent;padding:0 11px;color:var(--brand-text);font-size:15px}
+.control input[type=number]{font-variant-numeric:tabular-nums}
+.toggle-row{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px;padding:8px 0;color:#2e3538}
+.toggle-row input{accent-color:var(--brand-gold-deep)}
+.results{position:sticky;top:15px}
+.headline{background:var(--brand-cream);border:1px solid #e2d7ae;border-radius:14px;padding:20px;margin-bottom:15px}
+.headline .number{font-size:clamp(30px,4vw,45px);font-weight:900;color:var(--brand-gold-deep);line-height:1.18}
+.headline.negative{background:#f8ece8;border-color:#ebccc5}.headline.negative .number{color:var(--bad)}
+.muted{color:var(--brand-muted);font-size:12px}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{border:1px solid var(--brand-line);padding:14px;border-radius:13px;background:var(--brand-card-2)}
+.metric.total{background:var(--brand-black);color:#fff;border-color:var(--brand-black)}
+.metric .rate{font-size:26px;font-weight:900;line-height:1.25;margin:5px 0;color:var(--brand-gold-deep)}
+.metric.total .rate{color:var(--brand-gold)}
+.metric .sub{font-size:12px;color:var(--brand-muted)}
+.metric.total .sub{color:#dad5c7}.label{font-size:12px;font-weight:800}
+.line{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid #ece8df;padding:10px 0}.line strong{text-align:right}.line:last-child{border-bottom:0}
+.bar{display:flex;height:14px;overflow:hidden;background:#e7e3d8;border-radius:20px;margin:12px 0}.bar div{height:100%;min-width:0}
+.smallnote{color:var(--brand-muted);font-size:12px;margin:10px 0}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.btn{background:var(--brand-gold);border:none;border-radius:10px;padding:12px 16px;color:var(--brand-black);font-size:13px;font-weight:850;cursor:pointer;text-decoration:none;display:inline-block;transition:.15s ease}
+.btn.secondary{color:#fff;background:var(--brand-black-soft)}.btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+.brand{font-weight:800;font-size:13px}.footer{text-align:center;color:#6a6a68;font-size:12px;padding:20px 4px 35px}
+.notice{background:#f7f4eb;border-left:4px solid var(--brand-gold);padding:11px 12px;border-radius:8px;font-size:12px;color:#544f45}
+.seg{display:flex;gap:5px;background:#ece8df;padding:5px;border-radius:12px;margin-bottom:14px}.seg button{flex:1;background:transparent;border:0;border-radius:8px;padding:8px;font-weight:800;color:#6c675d;cursor:pointer}.seg button.active{background:#fff;color:var(--brand-black);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.fine{font-size:11px;color:#6c7c80}a{color:var(--brand-gold-deep)}
+.cta-panel{background:linear-gradient(180deg,#f6f0da,#f0e5be);border-color:#e3d6a4}
+.cta-panel p{margin-top:0}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.results{position:static}.shell{padding:10px}.hero{padding:24px}.hero::before{left:24px;top:32px;height:58px}.hero-inner{padding-left:22px}.panel{padding:18px}}
+@media(max-width:420px){.fields{gap:11px}.metric{padding:11px}.metric .rate{font-size:22px}.hero h1{font-size:34px}}
+@media print{body{background:#fff}.shell{max-width:100%;padding:0}.hero{background:#fff!important;color:#111!important;padding:0 0 15px;border-radius:0}.hero::before{display:none}.hero p{color:#5b5b5b!important}.eyebrow{color:var(--brand-gold-deep)!important}.layout{display:block}.panel{box-shadow:none;break-inside:avoid}.results{position:static}.actions,.seg,.inputcol,.footer,.notice a{display:none!important}.metric.total{color:#111;background:#f4f1e8;border-color:#d9d2be}.metric.total .sub{color:#555}.metric.total .rate{color:var(--brand-gold-deep)}.hero h1{font-size:26px}}
+
+/* Sell With Ariell dark edition, cohesive black and gold */
+:root{--brand-bg:#090b0c;--brand-card:#1b1d1e;--brand-card-2:#202224;--brand-line:#363638;--brand-text:#f5f3ed;--brand-muted:#bbb7ac;--brand-cream:#1c1a14}
+body{background:var(--brand-bg);color:var(--brand-text)}
+.hero{background:#0f1010;border:1px solid #3a3524;box-shadow:0 12px 35px #0004}
+.panel{background:#151718;border-color:#383735;box-shadow:0 6px 24px #0003;color:var(--brand-text)}
+.panel h2{color:#fff}.panel h3{color:var(--brand-gold)}
+label{color:#e2dfd6}.hint{color:#bcb7ac}
+.control{background:#232527;border-color:#51504b}
+.control input,.control select{color:#fff;background:#232527;color-scheme:dark}
+.control input::placeholder{color:#a8a59e}
+.control span{background:#303030;color:#e2dac6}
+.toggle-row{color:#ddd8cc}
+.headline{background:#262217;border-color:#6c582c}
+.headline .number{color:#efc355}
+.headline.negative{background:#2c1c1b;border-color:#6e3c36}
+.metric{background:#202223;border-color:#494641}
+.metric .rate{color:#e6ba4a}
+.metric.total{background:#302714;border-color:#95742d}
+.metric.total .rate{color:#f4c450}
+.metric.total .sub{color:#e0d2ad}
+.line{border-bottom-color:#3c3d3c}
+.seg{background:#292a2a}
+.seg button{color:#c4bba9}
+.seg button.active{background:var(--brand-gold);color:#111;box-shadow:none}
+.cta-panel{background:linear-gradient(180deg,#242116,#1b1a17);border-color:#79612e}
+.smallnote,.muted,.metric .sub{color:#bebbb3}
+.notice{background:#211e17;color:#d3ccba;border-left-color:var(--brand-gold)}
+.footer{color:#a8a7a3}
+.btn.secondary{background:#353535;color:#f4efe5;border:1px solid #666}
+.bar{background:#383838}
+a{color:#e8bd55}
+@media print{
+ body{background:#fff!important;color:#111!important}
+ .panel{background:#fff!important;color:#111!important;border-color:#ccc!important}
+ .panel h2,.panel h3,label,.line,.metric,.label{color:#111!important}
+ .headline,.metric{background:#f2f0ea!important;color:#111!important;border-color:#d9d2be!important}
+ .headline .number,.metric .rate{color:#9a700f!important}
+ .metric .sub,.muted,.smallnote{color:#555!important}
+ .metric.total{background:#f3eddc!important;color:#111!important}
+ .control,.control input,.control select,.control span{background:#fff!important;color:#111!important}
+}
+
+.cmhc-panel{border:1px solid #aa8533;background:#171714;border-radius:13px;padding:15px;margin-top:18px;color:#f1ebe0}.cmhc-panel h3{color:#e7ba50;margin:0 0 8px;font-size:16px}.cmhc-panel .line{border-color:#39352c}.cmhc-panel .smallnote{color:#c7c1b5}.cmhc-warning{background:#2c2317;border-left:4px solid #e3aa34;color:#f5dfab;padding:10px 12px;border-radius:7px;font-size:12px;margin:10px 0}.cmhc-panel a{color:#e9bc58}.cmhc-status{font-weight:750;color:#eac15e;font-size:12px}.cmhc-panel[hidden]{display:none!important}@media print{.cmhc-panel{color:#111;background:#faf7ec;border-color:#e8dcae}.cmhc-panel h3,.cmhc-status{color:#825d00}.cmhc-warning{background:#f7f0df;color:#4b3814}.cmhc-panel .smallnote{color:#555}}
+
+@media print{#emailReportSection{display:none!important} #downloadPdfBtn{display:none!important}}
+ .annual-return-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.return-stat{border:1px solid #8f7842;border-radius:12px;padding:14px;background:#211e17}.return-stat-value{font-size:27px;font-weight:850;line-height:1.3;color:#e7bd55;margin:6px 0}.stat-help{font-weight:500;opacity:.8}.return-stat .smallnote{margin:3px 0;color:#c5bfae}#annualizedBlock[hidden]{display:none!important}@media(max-width:440px){.annual-return-panel{grid-template-columns:1fr}}@media print{.annual-return-panel{break-inside:avoid}.return-stat{background:#f6f1e6!important;color:#222!important}.return-stat-value{color:#87610b!important}.return-stat .smallnote{color:#555!important}}
+</style></head><body><div class="shell">
+<header class="hero"><div class="hero-inner"><div class="eyebrow">Sell With Ariell | Calgary Investment Tools</div><h1>YOUR PROPERTY.<br><span class="gold">YOUR CASHFLOW.</span><br>YOUR STRATEGY.</h1><p>Run the numbers on a rental property with projected cashflow, mortgage paydown, appreciation, and combined return, all in one simple calculator, designed to help you make smarter real estate investment decisions.</p></div></header>
+<div class="layout"><div class="inputcol">
+<section class="panel"><h2>1. Purchase & financing</h2><div class="fields">
+<div class="field wide"><label for="address">Property address (optional)</label><div class="control"><input id="address" type="text" placeholder="Calgary, Alberta"></div></div>
+<div class="field"><label for="price">Purchase price</label><div class="control"><span>$</span><input id="price" type="number" min="0" step="1000" value="900000"></div></div>
+<div class="field"><label for="down">Down payment</label><div class="control"><input id="down" type="number" min="0" max="100" step="1" value="20"><span>%</span></div></div>
+<div class="field"><label for="rate">Mortgage interest rate</label><div class="control"><input id="rate" type="number" min="0" max="30" step=".05" value="3.8"><span>%</span></div></div>
+<div class="field"><label for="amort">Amortization</label><div class="control"><select id="amort"><option>15</option><option>20</option><option>25</option><option selected>30</option><option>35</option></select><span>years</span></div></div>
+<div class="field"><label for="closing">Closing costs & upfront repairs</label><div class="control"><span>$</span><input id="closing" type="number" min="0" value="0" step="100"></div></div>
+<div class="field"><label for="appreciation">Assumed appreciation</label><div class="control"><input id="appreciation" type="number" step=".1" min="-20" max="30" value="3.5"><span>%</span></div></div>
+</div><div id="cmhcPanel" class="cmhc-panel" hidden aria-live="polite"><h3>CMHC mortgage insurance estimate</h3><p class="smallnote">For an eligible owner-occupied purchase, the estimated insurance premium is added to the mortgage balance.</p><div class="line"><span>Base mortgage</span><strong id="cmhcBase"></strong></div><div class="line"><span>Estimated premium rate</span><strong id="cmhcRate"></strong></div><div class="line"><span>Estimated CMHC premium</span><strong id="cmhcPremium"></strong></div><div class="line"><span>Mortgage including premium</span><strong id="cmhcTotal"></strong></div><div id="cmhcWarning" class="cmhc-warning"></div><p class="smallnote">Estimate uses standard CMHC homeowner premium tiers. Non-traditional down payment, amortization surcharges, special programs and insurer rules may change the premium. <a href="https://www.cmhc-schl.gc.ca/consumers/home-buying/mortgage-loan-insurance-for-consumers/cmhc-mortgage-loan-insurance-cost" target="_blank" rel="noopener">CMHC premium schedule ↗</a></p></div></section>
+<section class="panel"><h2>2. Rental income (monthly)</h2><div class="fields">
+<div class="field"><label for="upper">Main / upper suite</label><div class="control"><span>$</span><input id="upper" type="number" min="0" value="3879"></div></div>
+<div class="field"><label for="lower">Lower / basement suite</label><div class="control"><span>$</span><input id="lower" type="number" min="0" value="1527"></div></div>
+<div class="field"><label for="parking">Garage / parking</label><div class="control"><span>$</span><input id="parking" type="number" min="0" value="0"></div></div>
+<div class="field"><label for="otherRent">Other rent</label><div class="control"><span>$</span><input id="otherRent" type="number" min="0" value="0"></div></div>
+<div class="field"><label for="vacancy">Vacancy allowance</label><div class="control"><input id="vacancy" type="number" min="0" max="100" step=".5" value="0"><span>%</span></div></div>
+<div class="field"><label for="management">Property management</label><div class="control"><input id="management" type="number" min="0" max="100" step=".5" value="0"><span>% of rent</span></div></div>
+</div></section>
+<section class="panel"><h2>3. Expenses & estimated property tax</h2><div class="toggle-row"><span>Automatically estimate Calgary residential property tax</span><input id="autoTax" type="checkbox" checked aria-label="Automatically estimate property tax"></div><div class="fields">
+<div class="field"><label for="assessed">Estimated assessed value <span class="hint">(editable)</span></label><div class="control"><span>$</span><input id="assessed" type="number" min="0" step="1000" value="900000"></div></div>
+<div class="field"><label for="taxRate">Tax estimate rate <span class="hint">(editable)</span></label><div class="control"><input id="taxRate" type="number" min="0" step=".001" value="0.66499"><span>%</span></div></div>
+<div class="field wide"><label for="taxAnnual">Annual property tax <span class="hint">(override by switching auto off)</span></label><div class="control"><span>$</span><input id="taxAnnual" type="number" min="0" value="5984.91" readonly></div></div>
+<div class="field"><label for="insurance">Insurance / month</label><div class="control"><span>$</span><input id="insurance" type="number" min="0" value="280"></div></div>
+<div class="field"><label for="utilities">Owner-paid utilities / month</label><div class="control"><span>$</span><input id="utilities" type="number" min="0" value="0"></div></div>
+<div class="field"><label for="condo">Condo / HOA fees / month</label><div class="control"><span>$</span><input id="condo" type="number" min="0" value="0"></div></div>
+<div class="field"><label for="maintenance">Repairs & maintenance reserve / month</label><div class="control"><span>$</span><input id="maintenance" type="number" min="0" value="0"></div></div>
+<div class="field"><label for="otherCost">Other expenses / month</label><div class="control"><span>$</span><input id="otherCost" type="number" min="0" value="0"></div></div>
+</div><p class="smallnote">This uses an editable Calgary property tax estimate. Actual tax is based on assessed value, not necessarily purchase price.</p></section>
+</div><div class="results">
+<section class="panel"><h2>Investment snapshot</h2><div class="headline" id="cashBox"><div class="label">Estimated monthly cashflow</div><div class="number" id="cashDisplay">$0</div><div class="muted" id="cashYear">$0 per year</div></div>
+<div class="line"><span>Monthly rent after vacancy</span><strong id="rentDisplay"></strong></div><div class="line"><span>Mortgage incl. any CMHC premium</span><strong id="mortgageTotalDisplay"></strong></div><div class="line"><span>Mortgage payment / month</span><strong id="paymentDisplay"></strong></div><div class="line"><span>Operating expenses / month</span><strong id="expenseDisplay"></strong></div><div class="line"><span>Net operating income / month</span><strong id="noiDisplay"></strong></div><div class="line"><span>Down payment</span><strong id="downDisplay"></strong></div><div class="line"><span>Total initial cash invested</span><strong id="investedDisplay"></strong></div><div class="line"><span>Estimated cap rate</span><strong id="capDisplay"></strong></div>
+</section>
+<section class="panel"><h2>Four ways your investment earns</h2><div class="seg" role="group" aria-label="Projection period"><button type="button" class="active" data-years="1">Year 1</button><button type="button" data-years="5">5 years</button><button type="button" data-years="10">10 years</button></div>
+<div class="metric-grid">
+<div class="metric"><div class="label">1 · Cashflow return</div><div class="rate" id="cashRate"></div><div class="sub" id="cashAmount"></div></div>
+<div class="metric"><div class="label">2 · Appreciation return</div><div class="rate" id="appRate"></div><div class="sub" id="appAmount"></div></div>
+<div class="metric"><div class="label">3 · Mortgage paydown return</div><div class="rate" id="payRate"></div><div class="sub" id="payAmount"></div></div>
+<div class="metric total"><div class="label">4 · Combined projected ROI</div><div class="rate" id="totalRate"></div><div class="sub" id="totalAmount"></div></div>
+</div><div class="bar" aria-label="Proportions of projected investment returns"><div id="barCash" style="background:#b98b17"></div><div id="barApp" style="background:#dbb75f"></div><div id="barPay" style="background:#6d767d"></div></div>
+<div class="annual-return-panel" id="annualReturnPanel" aria-live="polite"><div class="return-stat"><div class="label">Cash-on-cash return <span class="stat-help">(annual)</span></div><div class="return-stat-value" id="cocRate">—</div><div class="smallnote" id="cocNote">Annual net cashflow ÷ initial cash invested</div></div><div class="return-stat" id="annualizedBlock"><div class="label">Annualized total return <span class="stat-help">(CAGR equivalent)</span></div><div class="return-stat-value" id="annualizedRate">—</div><div class="smallnote" id="annualizedNote">Multi-year annualized projection</div></div></div><p class="smallnote" id="projectionNote"></p><div class="line"><span>Projected ending property value</span><strong id="futureValue"></strong></div><div class="line"><span>Projected ending mortgage balance</span><strong id="futureMortgage"></strong></div><div class="line"><span>Projected property equity</span><strong id="futureEquity"></strong></div>
+<div class="actions"><button class="btn" type="button" id="downloadPdfBtn">Download PDF report</button><button class="btn secondary" type="button" id="printBtn">Print report</button><button class="btn secondary" type="button" id="resetBtn">Reset example</button></div>
+</section>
+<section class="panel cta-panel" id="emailReportSection"><h2>Email your investment report</h2><p>Save your personalized numbers, and keep a copy for future property comparisons.</p><form id="emailReportForm"><div class="fields"><div class="field"><label for="leadName">Your name</label><div class="control"><input id="leadName" type="text" autocomplete="name" required placeholder="Full name"></div></div><div class="field"><label for="leadEmail">Your email</label><div class="control"><input id="leadEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div></div></div><div class="actions"><button class="btn" type="submit" id="emailBtn">Prepare email report</button></div></form><p id="emailStatus" class="smallnote" aria-live="polite">Preview mode: opens your email application with a prefilled summary and CC to realtors@sellwithariell.com. It does not send automatically or attach the PDF yet. For an attached PDF, use Download PDF report above. Automatic sending will require a secure GoHighLevel integration.</p></section>
+<div class="notice"><strong>Important:</strong> Educational estimates only, not investment, lending, tax or legal advice. This tool excludes tax deduction savings, as requested. Appreciation is assumed, not guaranteed. Multi-year ROI figures are cumulative, not annualized.</div>
+</div></div><footer class="footer"><span class="brand">Sell With Ariell Real Estate Team</span> · CIR Realty · Calgary, Alberta<br>With Heart, Hustle, Trusted Guidance, and 10+ Years Experience.</footer></div>
+<script>
+(function(){'use strict';const ids=['price','down','rate','amort','closing','appreciation','upper','lower','parking','otherRent','vacancy','management','assessed','taxRate','taxAnnual','insurance','utilities','condo','maintenance','otherCost'];const defaults={};ids.forEach(k=>defaults[k]=document.getElementById(k).value);const initialAuto=true;let years=1,assessedSynced=true;
+const el=id=>document.getElementById(id),n=id=>{const x=Number(el(id).value);return Number.isFinite(x)?x:0},money=v=>(v<0?'−':'')+new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:0}).format(Math.abs(v)),pct=v=>(v>=0?'':'−')+Math.abs(v).toFixed(2)+'%',put=(id,value)=>{el(id).textContent=value};
+function compute(){const price=Math.max(0,n('price')),down=Math.min(100,Math.max(0,n('down'))),basePrincipal=price*(1-down/100),ltv=100-down,cmhcPct=down>=20?0:ltv>90?4:ltv>85?3.1:2.8,cmhcFee=basePrincipal*cmhcPct/100,principal=basePrincipal+cmhcFee,invested=price*down/100+Math.max(0,n('closing'));const nominal=Math.max(0,n('rate'))/100,monthly=Math.pow(1+nominal/2,1/6)-1,months=Math.max(12,n('amort')*12);const panel=el('cmhcPanel');panel.hidden=down>=20;
+if(down<20){put('cmhcBase',money(basePrincipal));put('cmhcRate',pct(cmhcPct));put('cmhcPremium',money(cmhcFee));put('cmhcTotal',money(principal));const minimum=price<=500000?price*.05:25000+Math.max(0,price-500000)*.1;let warnings=['<strong>Important:</strong> Less than 20% down is for eligible owner-occupied principal residences, not a standard non-owner-occupied investment-property purchase. Renting a secondary suite while living in the property may qualify, subject to insurer and lender approval.'];if(price>=1500000)warnings.push('The purchase price is outside the standard CMHC homeowner-insurance limit (below $1.5 million).');if(price>0&&price*down/100+0.01<minimum)warnings.push('Down payment is below the usual minimum for a 1–2-unit owner-occupied property ('+money(minimum)+'). Three- or four-unit homes generally require at least 10% down.');if(n('amort')>25)warnings.push('An amortization longer than 25 years may be restricted to eligible borrowers and may carry an additional CMHC premium surcharge not included here.');el('cmhcWarning').innerHTML=warnings.join('<br><br>');}
+const payment=principal===0?0:monthly===0?principal/months:principal*monthly/(1-Math.pow(1+monthly,-months));if(el('autoTax').checked){el('taxAnnual').value=(Math.max(0,n('assessed'))*Math.max(0,n('taxRate'))/100).toFixed(2)}el('taxAnnual').readOnly=el('autoTax').checked;
+const gross=Math.max(0,n('upper'))+Math.max(0,n('lower'))+Math.max(0,n('parking'))+Math.max(0,n('otherRent'));const rent=gross*(1-Math.min(100,Math.max(0,n('vacancy')))/100);const operating=Math.max(0,n('taxAnnual'))/12+['insurance','utilities','condo','maintenance','otherCost'].reduce((a,k)=>a+Math.max(0,n(k)),0)+rent*Math.min(100,Math.max(0,n('management')))/100;const noi=rent-operating,cash=noi-payment,annualCash=cash*12;
+const m=Math.min(years*12,months);let balance=principal;if(monthly===0)balance=Math.max(0,principal-payment*m);else balance=Math.max(0,principal*Math.pow(1+monthly,m)-payment*(Math.pow(1+monthly,m)-1)/monthly);const paid=principal-balance;const future=price*Math.pow(1+n('appreciation')/100,years);const growth=future-price;const cashTotal=annualCash*years;const total=cashTotal+growth+paid;const ratio=x=>invested>0?100*x/invested:NaN;const r=x=>Number.isFinite(x)?pct(x):'N/A';
+put('cashDisplay',money(cash));put('cashYear',money(annualCash)+' per year');el('cashBox').classList.toggle('negative',cash<0);put('rentDisplay',money(rent));put('mortgageTotalDisplay',money(principal));put('paymentDisplay',money(payment));put('expenseDisplay',money(operating));put('noiDisplay',money(noi));put('downDisplay',money(price*down/100));put('investedDisplay',money(invested));put('capDisplay',price>0?pct(100*noi*12/price):'N/A');
+const coc=ratio(annualCash);put('cocRate',r(coc));put('cocNote',money(annualCash)+' annual cashflow ÷ '+money(invested)+' invested');const annualizedBlock=el('annualizedBlock');annualizedBlock.hidden=years===1;const endingMultiple=invested>0?1+total/invested:NaN;const annualized=Number.isFinite(endingMultiple)&&endingMultiple>0?(Math.pow(endingMultiple,1/years)-1)*100:NaN;put('annualizedRate',years>1?r(annualized):'—');put('annualizedNote',years+'-year equivalent annual rate based on total cumulative projected gain');put('cashRate',r(ratio(cashTotal)));put('appRate',r(ratio(growth)));put('payRate',r(ratio(paid)));put('totalRate',r(ratio(total)));put('cashAmount',money(cashTotal)+' over '+years+(years===1?' year':' years'));put('appAmount',money(growth)+' projected gain');put('payAmount',money(paid)+' principal paid');put('totalAmount',money(total)+' projected wealth created');put('futureValue',money(future));put('futureMortgage',money(balance));put('futureEquity',money(future-balance));put('projectionNote','Projected '+years+'-year cumulative return on initial cash invested ('+money(invested)+'). Cashflow assumes unchanged monthly income and expenses. No double-counting: mortgage principal is captured only under paydown. Annualized total return is a CAGR-equivalent illustration, not an IRR; cash distributions are assumed retained without reinvestment and actual timing of cashflows is not reflected.');let positives=[Math.max(0,cashTotal),Math.max(0,growth),Math.max(0,paid)],sum=positives.reduce((a,b)=>a+b,0);['barCash','barApp','barPay'].forEach((k,i)=>el(k).style.width=(sum?positives[i]/sum*100:0)+'%');}
+ids.forEach(k=>el(k).addEventListener('input',()=>{if(k==='price'&&assessedSynced)el('assessed').value=el('price').value;if(k==='assessed')assessedSynced=false;compute()}));el('autoTax').addEventListener('change',compute);document.querySelectorAll('[data-years]').forEach(b=>b.addEventListener('click',()=>{years=Number(b.dataset.years);document.querySelectorAll('[data-years]').forEach(x=>x.classList.toggle('active',x===b));compute()}));el('printBtn').addEventListener('click',()=>window.print());el('resetBtn').addEventListener('click',()=>{ids.forEach(k=>el(k).value=defaults[k]);el('autoTax').checked=initialAuto;el('address').value='';years=1;assessedSynced=true;document.querySelectorAll('[data-years]').forEach(b=>b.classList.toggle('active',b.dataset.years==='1'));compute()});compute();})();
+</script>
+<script>
+(function(){'use strict';
+const E=id=>document.getElementById(id), value=id=>E(id)?.value || '', shown=id=>E(id)?.textContent?.trim() || '', valname=(id)=>{const e=E(id);return e?.closest('.field')?.querySelector('label')?.textContent?.trim() || id};
+function reportRows(){
+ const rows=[['Property address',value('address')||'Not specified'],['Purchase price','$'+Number(value('price')||0).toLocaleString('en-CA')],['Down payment',value('down')+'%'],['Mortgage interest rate',value('rate')+'%'],['Amortization',value('amort')+' years'],['Closing costs & upfront repairs','$'+Number(value('closing')||0).toLocaleString('en-CA')],['Assumed annual appreciation',value('appreciation')+'%']];
+ for(const id of ['upper','lower','parking','otherRent','vacancy','management','assessed','taxRate','taxAnnual','insurance','utilities','condo','maintenance','otherCost']){const v=value(id);rows.push([valname(id),v+(['vacancy','management','taxRate'].includes(id)?'%':'')]);}
+ if(!E('cmhcPanel').hidden){rows.push(['CMHC premium',shown('cmhcPremium')],['Insured mortgage',shown('cmhcTotal')]);}
+ rows.push(['Monthly rent after vacancy',shown('rentDisplay')],['Mortgage amount',shown('mortgageTotalDisplay')],['Monthly mortgage payment',shown('paymentDisplay')],['Monthly operating expenses',shown('expenseDisplay')],['Monthly cashflow',shown('cashDisplay')],['Annual cashflow',shown('cashYear')],['Cashflow return',shown('cashRate')],['Appreciation return',shown('appRate')],['Mortgage paydown return',shown('payRate')],['Combined projected ROI',shown('totalRate')],['Annual cash-on-cash return',shown('cocRate')],['Annualized total return (CAGR equivalent)',document.getElementById('annualizedBlock').hidden?'Not applicable for Year 1':shown('annualizedRate')],['Projected property value',shown('futureValue')],['Projected mortgage balance',shown('futureMortgage')],['Projected equity',shown('futureEquity')]);return rows;
+}
+function plainReport(){return ['SELL WITH ARIELL | RENTAL PROPERTY REPORT','Prepared: '+new Date().toLocaleDateString('en-CA'),E('projectionNote').textContent,'',...reportRows().map(x=>x[0]+': '+x[1]),'','Important: Educational estimates, not lending, tax, legal, or investment advice. Returns are projections, not guarantees. Multi-year component returns are cumulative; the separate annualized figure is a CAGR-equivalent estimate, not an IRR. Less than 20% down reflects potentially eligible owner-occupied financing, not a standard rental-only purchase.'];}
+// Standalone PDF generator: no CDN, plugin, or external JavaScript dependency.
+function makePdf(){
+ const W=595.28,H=841.89, pages=[];let commands=[],y=0;
+ const escapePdf=t=>String(t).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[\u2013\u2014\u2212]/g,'-').replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/[^\x20-\x7e]/g,' ').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+ const color=(r,g,b)=>`${(r/255).toFixed(3)} ${(g/255).toFixed(3)} ${(b/255).toFixed(3)}`;
+ const fill=(x,top,w,h,r,g,b)=>commands.push(`${color(r,g,b)} rg ${x} ${(H-top-h).toFixed(2)} ${w} ${h} re f`);
+ function txt(x,top,t,size=10,bold=false,r=31,g=32,b=33){commands.push(`${color(r,g,b)} rg BT /${bold?'F2':'F1'} ${size} Tf 1 0 0 1 ${x.toFixed(2)} ${(H-top-size).toFixed(2)} Tm (${escapePdf(t)}) Tj ET`);}
+ function start(){if(commands.length)pages.push(commands.join('\n'));commands=[];fill(0,0,W,103,8,10,11);fill(38,27,5,53,210,166,58);txt(54,25,'SELL WITH ARIELL  |  CALGARY',10,true,210,166,58);txt(54,43,'RENTAL PROPERTY REPORT',21,true,255,255,255);txt(54,75,'Cashflow  |  Appreciation  |  Mortgage Paydown  |  Total ROI',9,false,221,220,216);y=120;}
+ const wrap=(value,width,fontSize=9)=>{let words=String(value).split(/\s+/),lines=[],line='';const max=Math.floor(width/(fontSize*.52));for(const word of words){if((line+' '+word).length>max&&line){lines.push(line);line=word;}else line+=(line?' ':'')+word;}if(line)lines.push(line);return lines.length?lines:[''];};
+ function room(height){if(y+height>H-68)start();}
+ function section(title){room(37);fill(38,y,W-76,24,241,236,220);txt(47,y+5,title,11,true,97,71,13);y+=34;}
+ function row(label,value){let l=wrap(label,275),v=wrap(value,190),height=Math.max(l.length,v.length)*14+8;room(height);l.forEach((line,i)=>txt(44,y+i*14,line,9,false,62,63,64));v.forEach((line,i)=>txt(350,y+i*14,line,9,true,15,16,17));y+=height;fill(42,y-4,W-84,0.6,228,225,216);}
+ function footer(){pages.push(commands.join('\n'));for(let i=0;i<pages.length;i++){let c=pages[i];const foot=`${color(120,120,120)} rg BT /F1 8 Tf 1 0 0 1 42 29 Tm (${escapePdf('Sell With Ariell Real Estate Team | CIR Realty | filipinorealtorcalgary.com')}) Tj ET ${color(120,120,120)} rg BT /F1 8 Tf 1 0 0 1 544 29 Tm (Page ${i+1}) Tj ET`;pages[i]=c+'\n'+foot;}}
+ start();txt(42,y,'Prepared: '+new Date().toLocaleDateString('en-CA'),9,false,110,110,110);y+=28;
+ section('INVESTMENT RESULTS');
+ const results=[['Projection period',document.querySelector('[data-years].active')?.textContent?.trim()||'Year 1'],['Estimated monthly cashflow',shown('cashDisplay')],['Annual cashflow',shown('cashYear')],['Annual cash-on-cash return',shown('cocRate')],['Cashflow return',shown('cashRate')],['Appreciation return',shown('appRate')],['Mortgage paydown return',shown('payRate')],['Combined projected ROI',shown('totalRate')]];
+ if(!E('annualizedBlock').hidden)results.push(['Annualized total return (CAGR equivalent)',shown('annualizedRate')]);
+ results.push(['Projected ending property value',shown('futureValue')],['Projected ending mortgage balance',shown('futureMortgage')],['Projected property equity',shown('futureEquity')]);
+ results.forEach(x=>row(...x));
+ section('PROPERTY & FINANCING');
+ for(const id of ['address','price','down','rate','amort','closing','appreciation']){const suffix=['down','rate','appreciation'].includes(id)?'%':'';row(valname(id),value(id)||'Not specified'+suffix);}
+ row('Mortgage amount including insurance',shown('mortgageTotalDisplay'));
+ if(!E('cmhcPanel').hidden){row('Estimated CMHC premium',shown('cmhcPremium'));row('Insured mortgage',shown('cmhcTotal'));}
+ section('RENTAL INCOME & OPERATING EXPENSES');
+ for(const id of ['upper','lower','parking','otherRent','vacancy','management','assessed','taxRate','taxAnnual','insurance','utilities','condo','maintenance','otherCost'])row(valname(id),value(id)+(['vacancy','management','taxRate'].includes(id)?'%':''));
+ row('Monthly rent after vacancy',shown('rentDisplay'));row('Monthly mortgage payment',shown('paymentDisplay'));row('Monthly operating expenses',shown('expenseDisplay'));row('Net operating income',shown('noiDisplay'));
+ section('IMPORTANT ASSUMPTIONS');
+ for(const line of wrap('Educational estimates only, not investment, legal, lending, or tax advice. Appreciation is not guaranteed. Tax deductions, selling costs, and future financing changes are excluded. Multi-year component returns are cumulative, and annualized return is a CAGR-equivalent estimate, not an IRR. Less than 20% down is intended for qualifying owner-occupied purchases, not standard rental-only financing.',100,10)){room(15);txt(44,y,line,9);y+=15;}
+ footer();
+ const objects=[null],add=content=>{objects.push(content);return objects.length-1;};
+ const fontRegular=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+ const fontBold=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+ const pagesId=add('');const pageIds=[];
+ for(const c of pages){const bytes=new TextEncoder().encode(c);const streamId=add(`<< /Length ${bytes.length} >>\nstream\n${c}\nendstream`);pageIds.push(add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${fontRegular} 0 R /F2 ${fontBold} 0 R >> >> /Contents ${streamId} 0 R >>`));}
+ objects[pagesId]=`<< /Type /Pages /Kids [${pageIds.map(x=>x+' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
+ const catalog=add(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+ let pdf='%PDF-1.4\n%PDF generated by Sell With Ariell\n',offsets=[0];const encoder=new TextEncoder();
+ for(let i=1;i<objects.length;i++){offsets[i]=encoder.encode(pdf).length;pdf+=`${i} 0 obj\n${objects[i]}\nendobj\n`;}
+ const xref=encoder.encode(pdf).length;pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+ for(let i=1;i<objects.length;i++)pdf+=`${String(offsets[i]).padStart(10,'0')} 00000 n \n`;
+ pdf+=`trailer\n<< /Size ${objects.length} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+ return new Blob([encoder.encode(pdf)],{type:'application/pdf'});
+}
+E('downloadPdfBtn').addEventListener('click',()=>{try{const blob=makePdf(),link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download='Sell-With-Ariell-Rental-Property-Report.pdf';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(err){console.error('PDF export failed',err);alert('PDF export encountered a problem. Please use Print report and choose Save as PDF.');}});
+E('emailReportForm').addEventListener('submit',e=>{e.preventDefault();const name=value('leadName').trim(),email=value('leadEmail').trim();if(!name||!E('leadEmail').checkValidity()){E('emailReportForm').reportValidity();return;}
+const subject='Rental Property Investment Report - Sell With Ariell';const body='Hi '+name+',\n\nHere is your rental property projection summary:\n\n'+plainReport().join('\n')+'\n\nSell With Ariell Real Estate Team';const url='mailto:'+encodeURIComponent(email)+'?cc='+encodeURIComponent('realtors@sellwithariell.com')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+E('emailStatus').textContent='Your email application will open with the report summary addressed to '+email+' and CC to realtors@sellwithariell.com. You must review and send it manually. No email has been sent automatically.';window.location.href=url;
+});
+})();
+</script>
+</body></html>
